@@ -170,6 +170,7 @@ class Records:
                     row["Total Units"],
                     row["CPSC Units"],
                 ])
+        return None
    
     def print_levels(self, std_levels:List[dict[str, int]])-> None:
         counts = Counter(std_levels)
