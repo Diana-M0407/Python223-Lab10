@@ -4,7 +4,7 @@
 
 from student_records import Records
 
-# instantiate an object from Table
+# instantiate an object from Records
 students = Records('Students.csv')
 courses = Records('course enrollment.csv')
 
