@@ -40,7 +40,7 @@ print(units_list)
 
 
 file = input("Enter the name of the file: ")
-courses.save_to(file)
+courses.save_to(units_list, file)
 
 
 #def get_units_per_student(courses: List[dict[str, str]])-> List[dict[str, int]]:

@@ -136,7 +136,7 @@ class Table:
             "CPSC Units"  : CPSC_Units,
             }
         
-        self.data.append(row)
+        #self.data.append(row)
 
         with open(filename, "w", encoding= "utf-8") as f:
            fieldnames = ["ID", "Total Units", "CPSC Units"]
@@ -172,14 +172,14 @@ class Table:
         return units_per_student
 
 
-    def save_to(self, out_filename: str) -> None:
+    def save_to(self, in_file:List[dict[str, int]], out_filename: str) -> None:
         with open(out_filename, "w", encoding="utf-8", newline="") as f:
             writer = csv.writer(f)
             # (optional) write a header row if you want
             writer.writerow(["ID", "Total Units", "CPSC Units"])
 
             # write each dict as a simple list of values
-            for row in self.data:
+            for row in in_file:
                 writer.writerow([
                     row["ID"],
                     row["Total Units"],
