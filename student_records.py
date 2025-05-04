@@ -12,8 +12,6 @@ Before doing that you will either have to re-open the file and re-create a reade
 use the file object's seek() method to move the 'cursor' to the beginning of the file:  file.seek(0)
 
 Please take a note of this, in case your solution involves writing more than one loop for a given reader or dictReader object.
-
-
 **************************************************************************************************************************
 **************************************************************************************************************************
 Students.csv - This file includes "ID", "level" and "major" of several students.  There are no duplicate IDs in this file:
@@ -42,9 +40,7 @@ Course enrollments.csv - This file includes the classes that the students in the
                          152,CPSC121A,2
                          152,CPSC121L,1
 
-****************************************************************************************************************************
-
-
+***************************************************************************************************************************************
 Please write a Python program to (using the given above 2 files) print the number of freshmen, sophomores, juniors and 
 seniors to the output window: 
     
@@ -53,15 +49,7 @@ seniors to the output window:
     14 sophmores
     25 juniors
     41 seniors
-*****************************************************************************************************************************
-'''
-
-
-
-
-
-
-'''
+****************************************************************************************************************************************
 ****************************************************************************************************************************************
 The program also has to create an output CSV file that includes the total number of units, as well as the total number of CPSC 
 units (courses that start with 'CPSC') each student is taking. The ID field in this file is unique.  'Total Units' and 'CPSC Units' are 
@@ -83,22 +71,15 @@ program).
 '''
 
 # Diana Maldonado
-# April 29, 2025
-# Lab09- Tuffy Flight Schedule
+# May 04, 2025
+# Homework-Lab10: CSV Student Records
 
-#from __future__ import annotations
-
-#import json
 from collections import Counter
-import re
 from pathlib import Path
-from typing import List, Tuple, Dict, Union
-
-_TIME_RE = re.compile(r"(?:[01]\d|2[0-3])[0-5]\d")
-
+from typing import List
 import os, csv
 
-class Table:
+class Records:
     def __init__(self, filename: str)-> None:
         self.filename:str = filename
         #self.data = List[Tuple[int, str, str]] = []
@@ -136,7 +117,7 @@ class Table:
             "CPSC Units"  : CPSC_Units,
             }
         
-        #self.data.append(row)
+        filename.append(row)
 
         with open(filename, "w", encoding= "utf-8") as f:
            fieldnames = ["ID", "Total Units", "CPSC Units"]
@@ -144,7 +125,6 @@ class Table:
            writer.writerheader()
            writer.writerow(self.data)
             
-        # return true if flight added and json written
         return True    
     
     def get_units_per_student(self, courses: List[dict[str, str]])-> List[dict[str, int]]:
@@ -164,7 +144,12 @@ class Table:
                     if row["Course"].startswith("CPSC"):
                     #if row['Course'][:4] == "CPSC":
                         cs_units += int(row['Units'])
-            student= {"ID":id, "Total Units": tot_units, "CPSC Units": cs_units}
+            student= {
+                "ID":id, 
+                "Total Units": tot_units, 
+                "CPSC Units": cs_units
+                }
+            
             units_per_student.append(student)
         #print(units_per_student)
             #courses.save_to(id, total_units,CS_units,file)
@@ -196,84 +181,3 @@ class Table:
     
         return None
     
-    # Helper function
-    @staticmethod
-    def _verify_time(hhmm: str) -> bool:
-        #returns True if time format is correct
-        return bool(_TIME_RE.fullmatch(hhmm))
-
-    def add_flight(self, origin: str, destination: str, flight_number: str, departure: str , next_day: str, arrival:str)-> bool:
-        #origin        = origin
-        #destination   = destination
-        #flight_number = flight_number
-
-        if not self._verify_time(departure):
-            return False
-
-        if not self._verify_time(arrival):
-            return False
-        
-        if next_day not in ("Y", "N", "y", "n"):
-            return False
-        
-        self.data.append(  
-            {
-            "origin"       : origin.upper(),
-            "destination"  : destination.upper(),
-            "flight_number": flight_number.upper(),
-            "departure"    : departure,
-            "next_day"     : next_day.upper(),
-            "arrival"      : arrival,
-            }
-        )
-
-        #with open(self.filename, "w", encoding= "utf-8") as f:
-        #   json.dump(self.data, f, indent=2)
-            
-        # return true if flight added and json written
-        return True
-
-    # Helper functions: 
-    @staticmethod
-    def _HHMM_to_minutes(HHMM: str):
-        return int(HHMM[:2])*60 + int(HHMM[2:])
-    
-    @staticmethod
-    def _minutes_to_HHMM(mins: int):
-        h, m = divmod(mins, 60)
-        return f"{h}:{m:02d}"
-    
-    @staticmethod
-    def _format_ampm(HHMM: str):
-        h, m = int(HHMM[:2]), int(HHMM[2:])
-        ampm = "am" if h < 12 else "pm"
-        h12 = h % 12 or 12
-        return f"{h12}:{m:02d}{ampm}"
-    
-    def get_flights(self):
-        display : list[tuple[str, str, str, str, str, str]] = []
-
-        for f in self.data:
-            depart_ampm = self._format_ampm(f["departure"])
-            arrival_plus = f["next_day"] == "Y"
-            arrival_ampm = ("+" if arrival_plus else '') + self._format_ampm(f["arrival"])
-
-            mins = self._HHMM_to_minutes(f["arrival"]) - self._HHMM_to_minutes(f["departure"])
-            if arrival_plus:
-                mins += 24*60
-            dur = self._minutes_to_HHMM(mins)
-
-            display.append(
-                (
-                f["origin"],
-                f["destination"],
-                f["flight_number"],
-                depart_ampm, arrival_ampm, dur,
-                )
-            )
-
-        return display
-
-
-#record = Table("Students.csv")
-#record.load_csv()
